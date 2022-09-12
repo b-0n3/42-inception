@@ -9,7 +9,8 @@ RUN mkdir -p  /var/www/html
 RUN mv wordpress /var/www/html/wordpress
 RUN chown -R www-data:www-data /var/www/html/wordpress
 RUN chmod -R 755 /var/www/html/wordpress
-COPY ./wp-config.php /var/www/html/wordpress/wp-config.php
+RUN  rm -rf /var/www/html/wordpress/wp-config-sample.php
+COPY ./tools/wp-config.php /var/www/html/wordpress/wp-config.php
 
 FROM debian:buster 
 
@@ -18,10 +19,7 @@ RUN apt-get install php-fpm php-common php-mbstring php-xmlrpc \
     php-gd php-xml php-mysql php-cli php-zip php-curl -y
 RUN mkdir -p /var/www/html/wordpress
 COPY  --from=wordpress-image /var/www/html/wordpress /var/www/html/wordpress
-COPY ./www.conf /etc/php/7.3/fpm/pool.d/www.conf
+COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 RUN mkdir -p  /run/php
 
-# RUN chown -R www-data:www-data /run/php/php7.3-fpm.pid
-# RUN apt install tail -y
 CMD ["php-fpm7.3", "-FR"]
-

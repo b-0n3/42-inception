@@ -6,32 +6,56 @@ services:
      ports:
       - "3306"
      networks:
-      - db
+      - bach_end
+     env_file:
+      - ".env"
      restart: unless-stopped 
      volumes:
-        - /home/aait-ham/data/mysql:/var/lib/mysql    
+        - db_volume:/var/lib/mysql   
   wordpress:
     build: ./requirements/wordpress
     container_name: wordpress
     restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - "9000"
     # depends_on:
     #   - mariadb
+    volumes:
+      - wp_volume:/var/www/html/wordpress
     networks:
-      - inception
-      - db
+      - front_end
+      - bach_end
   nginx:
     build: ./requirements/nginx
     container_name: nginx
     ports:
      - "443:443"
     restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - wp_volume:/var/www/html/wordpress
     depends_on:
      - wordpress
     networks:
-      - inception
-
+      - front_end
+volumes:
+  wp_volume:
+    driver: local
+    driver_opts:
+      device: ${INCEPTION_DATA_DIR?:err}/wp
+      o: bind
+      type: none
+  db_volume:
+    driver: local
+    driver_opts:
+      device: ${INCEPTION_DATA_DIR?:err}/db
+      o: bind
+      type: none
 networks:
-  inception:
-  db:
+  front_end:
+    name: frontend
+  bach_end:
+    name: backend

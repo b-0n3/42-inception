@@ -13,7 +13,7 @@ RUN mkdir -p /etc/nginx/ssl
 COPY  --from=ssl-gen /etc/nginx/ssl/nginx.crt  /etc/nginx/ssl/nginx.crt
 COPY  --from=ssl-gen /etc/nginx/ssl/nginx.key  /etc/nginx/ssl/nginx.key
 
-COPY ./aait-ham.42.fr.conf /etc/nginx/sites-available/default
+COPY ./conf/aait-ham.42.fr.conf /etc/nginx/sites-available/default
 
 # COPY ./nginx.conf /etc/nginx/nginx.conf
 

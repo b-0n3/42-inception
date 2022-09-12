@@ -7,7 +7,7 @@ if [ -z "$(mysql -u root -e "SHOW DATABASES LIKE '${DB_NAME}'" | grep ${DB_NAME}
     
     echo "Creating database ${DB_NAME}"
     mysql -u root -e "CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;"
-    # mysql -u root ${DB_NAME} < /tmp/wp-db.sql
+    mysql -u root ${DB_NAME} < /tmp/wordpress.sql
 
     mysql -u root -e "\
     GRANT ALL PRIVILEGES ON ${DB_NAME}.*\

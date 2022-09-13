@@ -1,0 +1,97 @@
+version: '3'
+services:
+  mariadb:
+     build: ./requirements/mariadb
+     container_name: mariadb
+     ports:
+      - "3306"
+     networks:
+      - bach_end
+     env_file:
+      - ".env"
+     restart: unless-stopped 
+     volumes:
+        - db_volume:/var/lib/mysql
+  states:
+    build: ./requirements/states
+    container_name: states
+    ports:
+      - "8080"
+    networks:
+      - front_end
+    restart: unless-stopped
+    volumes:
+       - /var/run/docker.sock:/var/run/docker.sock:ro
+       - db_states:/opt/docker-stats/db
+  redis:
+   build: ./requirements/redis
+   container_name: redis
+   ports:
+      - "6379"
+   networks:
+      - bach_end
+   env_file:
+      - ".env"
+   restart: unless-stopped
+  roxy:
+    build: ./requirements/web_site
+    container_name: roxy
+    ports:
+      - "80"
+    networks:
+     - front_end
+    restart: unless-stopped
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "9000"
+    # depends_on:
+    #   - mariadb
+    volumes:
+      - wp_volume:/var/www/html/wordpress
+    networks:
+      - front_end
+      - bach_end
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    ports:
+     - "443:443"
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - wp_volume:/var/www/html/wordpress
+    depends_on:
+     - wordpress
+    networks:
+      - front_end
+volumes:
+  wp_volume:
+    driver: local
+    driver_opts:
+      device: ${INCEPTION_DATA_DIR?:err}/wp
+      o: bind
+      type: none
+  db_volume:
+    driver: local
+    driver_opts:
+      device: ${INCEPTION_DATA_DIR?:err}/db
+      o: bind
+      type: none
+  db_states:
+    driver: local
+    driver_opts:
+      device: ${INCEPTION_DATA_DIR?:err}/db_states
+      o: bind
+      type: none
+networks:
+  front_end:
+    name: frontend
+  bach_end:
+    name: backend

@@ -2,6 +2,7 @@ include ./srcs/.env
 
 
 COMPOSE		= cd srcs && docker-compose
+COMPOSE_BONUS = cd srcs/requirements/bonus && docker-compose
 
 WP_DIR		= /home/aait-ham/data/wp
 DB_DIR		= /home/aait-ham/data/db
@@ -43,5 +44,27 @@ fclean: clean
 
 rm:
 	@${COMPOSE} rm -f || true
+
+bonus-up:
+	@${COMPOSE_BONUS} up -d --remove-orphans
+bonus: .init
+	@${COMPOSE_BONUS} up -d --remove-orphans
+
+bonus-down:
+	@${COMPOSE_BONUS} down
+
+bonus-build: .init
+	@${COMPOSE_BONUS} build
+
+bonus-fclean: bonus-down bonus-rm
+	@${COMPOSE_BONUS} images -q | xargs docker rmi 2>/dev/null || true
+	docker volume rm `docker volume ls -qf dangling=true` 2>/dev/null || true
+	@docker image rm $(shell docker images -aq) || true
+bonus-rm:
+	@${COMPOSE_BONUS} rm -f || true
+	
+	
+bonus-re: bonus-fclean bonus-build bonus-up
+
 
 .PHONY: .init up down build re clean fclean rm

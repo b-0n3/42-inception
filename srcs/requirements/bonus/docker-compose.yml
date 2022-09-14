@@ -1,5 +1,21 @@
 version: '3'
 services:
+  ftp:
+   build: ./requirements/ftp
+   container_name: ftp
+   ports:
+    - 21:21
+    - 40000:40000
+    - 50000:50000
+   restart: unless-stopped
+   volumes: wp_volume:/home/ftpuser/ftp
+  adminer:
+   build: ./requrirments/adminer
+   container_name: adminer
+   ports:
+    - "80"
+   restart: unless-stoped
+   
   mariadb:
      build: ./requirements/mariadb
      container_name: mariadb

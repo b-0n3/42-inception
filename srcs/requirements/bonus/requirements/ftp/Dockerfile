@@ -10,13 +10,12 @@ RUN apt-get update -y
 RUN apt-get install vsftpd -y
 RUN adduser  --disabled-password --gecos '' ftpuser
 RUN echo "ftpuser:ftpuser" | chpasswd
-RUN mkdir -p /home/ftpuser/ftp
-RUN chown -R ftpuser:ftpuser /home/ftpuser/ftp
-RUN chmod -R 777 /home/ftpuser/ftp
 RUN  mkdir -p /etc/ssl/private
 COPY --from=ssl-gen /vsftpd.key  /etc/ssl/private/vsftpd.key 
 COPY --from=ssl-gen /vsftpd.crt /etc/ssl/private/vsftpd.crt 
 COPY ./conf/vsftpd.conf /etc/vsftpd.conf
+COPY ./conf/start.sh /start.sh
 RUN mkdir -p /var/share/empty
 
-ENTRYPOINT vsftpd /etc/vsftpd.conf
+
+ENTRYPOINT ["/bin/bash", "/start.sh"]

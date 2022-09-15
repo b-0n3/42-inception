@@ -64,7 +64,7 @@ bonus-rm:
 	@${COMPOSE_BONUS} rm -f || true
 	
 	
-bonus-re: bonus-fclean bonus-build bonus-up
+bonus-re: bonus-fclean bonus-build bonus-up fclean
 
 
 .PHONY: .init up down build re clean fclean rm

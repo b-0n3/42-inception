@@ -4,17 +4,21 @@ services:
    build: ./requirements/ftp
    container_name: ftp
    ports:
-    - 21:21
-    - 40000:40000
-    - 50000:50000
+    - "21:21"
+    - "10090-10099:10090-10099"
    restart: unless-stopped
-   volumes: wp_volume:/home/ftpuser/ftp
+   volumes: 
+     - wp_volume:/home/ftpuser/ftp
+
   adminer:
-   build: ./requrirments/adminer
+   build: ./requirements/adminer
    container_name: adminer
    ports:
     - "80"
-   restart: unless-stoped
+   networks:
+    - front_end
+    - bach_end
+   restart: unless-stopped
    
   mariadb:
      build: ./requirements/mariadb

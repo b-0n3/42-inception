@@ -28,7 +28,7 @@ services:
      networks:
       - bach_end
      env_file:
-      - ".env"
+      - ./.env
      restart: unless-stopped 
      volumes:
         - db_volume:/var/lib/mysql
@@ -51,7 +51,7 @@ services:
    networks:
       - bach_end
    env_file:
-      - ".env"
+      - ./.env
    restart: unless-stopped
   roxy:
     build: ./requirements/web_site

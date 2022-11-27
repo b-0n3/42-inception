@@ -2,7 +2,7 @@
 
 service mysql start
 
-if [ -z "$(mysql -u root -e "SHOW DATABASES LIKE '${DB_NAME}'" | grep ${DB_NAME})" ]; then
+if [ -z "$(mysql -u root -e -p $DB_ADMIN_PASSWORD "SHOW DATABASES LIKE '${DB_NAME}'" | grep ${DB_NAME})" ]; then
     
     echo "Creating database ${DB_NAME}"
     mysql -u root -e "CREATE DATABASE ${DB_NAME} CHARACTER SET utf8 COLLATE utf8_general_ci;"
@@ -16,5 +16,5 @@ if [ -z "$(mysql -u root -e "SHOW DATABASES LIKE '${DB_NAME}'" | grep ${DB_NAME}
     ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ADMIN_PASSWORD}';
     FLUSH PRIVILEGES;"
 fi
-mysqladmin -u root -p $DB_ROOT_PASSWORD shutdown
+echo $DB_ADMIN_PASSWORD |  mysqladmin -u root -p  shutdown
 mysqld_safe /etc/mysl/mariadb.conf.d/50-server.cnf

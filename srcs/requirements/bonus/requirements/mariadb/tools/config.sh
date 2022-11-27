@@ -1,6 +1,8 @@
 #!/bin/bash
+sed -i 's/127\.0\.0\.1/0\.0\.0\.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
 
 service mysql start
+
 
 if [ -z "$(mysql -u root -e -p $DB_ADMIN_PASSWORD "SHOW DATABASES LIKE '${DB_NAME}'" | grep ${DB_NAME})" ]; then
     
@@ -17,4 +19,4 @@ if [ -z "$(mysql -u root -e -p $DB_ADMIN_PASSWORD "SHOW DATABASES LIKE '${DB_NAM
     FLUSH PRIVILEGES;"
 fi
 echo $DB_ADMIN_PASSWORD |  mysqladmin -u root -p  shutdown
-mysqld_safe /etc/mysl/mariadb.conf.d/50-server.cnf
+mysqld 

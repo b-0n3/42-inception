@@ -28,7 +28,7 @@ services:
      networks:
       - bach_end
      env_file:
-      - ./.env
+      - .env
      restart: unless-stopped 
      volumes:
         - db_volume:/var/lib/mysql
